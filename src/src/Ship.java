@@ -3,7 +3,7 @@ package src;
 public class Ship {
 
     private int[] startLocation;
-    private String orientation;
+    private int orientation;
     private String shipType;
     private int shipLength;
     private boolean isDestroyed = false;
@@ -21,11 +21,15 @@ public class Ship {
         return shipType;
     }
 
-    public boolean isDestroyed() {
+    public void setIsDestroyed(boolean isDestroyed) {
+        this.isDestroyed = isDestroyed;
+    }
+
+    public boolean getIsDestroyed() {
         return isDestroyed;
     }
 
-    public String getOrientation() {
+    public int getOrientation() {
         return orientation;
     }
 
@@ -33,7 +37,7 @@ public class Ship {
         return shipLength;
     }
 
-    public void shipSetter(int[] startLocation, String orientation){
+    public void shipSetter(int[] startLocation, int orientation){
         this.startLocation = startLocation;
         this.orientation = orientation;
     }

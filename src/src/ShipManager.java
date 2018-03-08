@@ -12,6 +12,8 @@ public class ShipManager {
     private Ship submarine = new Ship("Submarine", 3);
     private Ship battleship = new Ship("Battleship", 4);
     private Ship carrier = new Ship("Carrier", 5);
+    public static final int horizontal = 1;
+    public static final int vertical = 2;
 
     public ShipManager(){
         shipList[0] = patrolBoat1;
@@ -27,25 +29,25 @@ public class ShipManager {
         return shipList;
     }
 
-    public boolean checkValidPlace(Ship ship, Grid grid, int[] startLocation, String orientation){
+    public boolean checkValidPlace(Ship ship, Grid grid, int[] startLocation, int orientation){
         int i = startLocation[0];
         int j = startLocation[1];
-        if(orientation.equalsIgnoreCase("vertical")){
+        if(orientation == vertical){
             if((i + ship.getShipLength() - 1) >= grid.getShipBoard().length || i < 0){
                 return false;
             } else {
                 for (int a = i; a < i + ship.getShipLength(); a++){
-                    if(grid.getShipBoard()[a][j] == 'S'){
+                    if(grid.getShipBoard()[a][j].equalsIgnoreCase(Grid.shipIcon)){
                         return false;
                     }
                 }
             }
-        } else if(orientation.equalsIgnoreCase("horizontal")){
+        } else if(orientation == horizontal){
             if(j + ship.getShipLength() - 1 >= grid.getShipBoard().length || j < 0){
                 return false;
             } else {
                 for (int a = j; a < j + ship.getShipLength(); a++){
-                    if(grid.getShipBoard()[i][a] == 'S'){
+                    if(grid.getShipBoard()[i][a].equalsIgnoreCase(Grid.shipIcon)){
                         return false;
                     }
                 }
@@ -54,10 +56,16 @@ public class ShipManager {
         return true;
     }
 
-    public void placeShip(Ship ship, int[] startLocation, Grid grid, String orientation){
+    public void placeShip(Ship ship, int[] startLocation, Grid grid, int orientation){
         if(checkValidPlace(ship, grid, startLocation, orientation)){
             ship.shipSetter(startLocation, orientation);
             grid.shipPlacement(ship);
+        }
+    }
+
+    public void resetShips(){
+        for(Ship ship:shipList){
+            ship.setIsDestroyed(false);
         }
     }
 }
