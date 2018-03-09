@@ -7,6 +7,7 @@ public class Ship {
     private String shipType;
     private int shipLength;
     private boolean isDestroyed = false;
+    private int timesHit = 0;
 
     public Ship(String shipType, int shipLength) {
         this.shipType = shipType;
@@ -42,4 +43,12 @@ public class Ship {
         this.orientation = orientation;
     }
 
+    public void addHit(){
+        timesHit++;
+        if(timesHit == shipLength){
+            isDestroyed = true;
+        }
+    }
+
+    public void resetHits(){ timesHit = 0; }
 }

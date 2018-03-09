@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 public class GameLogic {
 
-    HashMap<String, Integer> stringLetterToNum = new HashMap<>();
-    HashMap<String, Integer> stringNumToNum = new HashMap<>();
+    private HashMap<String, Integer> stringLetterToNum = new HashMap<>();
+    private HashMap<String, Integer> stringNumToNum = new HashMap<>();
 
     public GameLogic(){
         stringLetterToNum.put("A", 1);
@@ -68,8 +68,14 @@ public class GameLogic {
         }
     }
 
-    public boolean playerShipPlacement(Grid grid, ShipManager ships){
+    public boolean playerShipPlacement(Grid grid, ShipManager ships, int[] inputLocation, Ship ship, int orientation) {
         boolean isNotPlaced = true;
+        if(orientation == 0){
+            isNotPlaced = true;
+        }else if(ships.checkValidPlace(ship, grid, inputLocation, orientation)){
+            ships.placeShip(ship, inputLocation, grid, orientation);
+            isNotPlaced = false;
+        }
         return isNotPlaced;
     }
 
@@ -79,4 +85,37 @@ public class GameLogic {
         player1Ships.resetShips();
         player2Ships.resetShips();
     }
+
+    public int[] stringToCoordinates(String inputLocation){
+        String letterCoordinate = "";
+        if(!inputLocation.equals(null)){
+            letterCoordinate = Character.toString(inputLocation.charAt(0));
+        }
+        String numberCoordinate = "";
+        if(inputLocation.length() > 1){
+            numberCoordinate = inputLocation.substring(1);
+        }
+        int[] startLocation = new int[2];
+        startLocation[0] = letterToNum(letterCoordinate);
+        startLocation[1] = numberToNumber(numberCoordinate);
+        return startLocation;
+    }
+
+    private int letterToNum(String letterCoordinate){
+        if(!letterCoordinate.equals("")) {
+            return stringLetterToNum.get(letterCoordinate);
+        } else {
+            return 0;
+        }
+    }
+
+    private int numberToNumber(String numberCoordinate){
+        if(!numberCoordinate.equals("")) {
+            return stringNumToNum.get(numberCoordinate);
+        } else {
+            return 0;
+        }
+    }
+
+
 }

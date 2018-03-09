@@ -69,4 +69,8 @@ public class Grid {
             shipBoard[i][0] = letters[i - 1];
         }
     }
+
+    public boolean checkShotInvalid(int[] shotLocation){
+        return false;
+    }
 }

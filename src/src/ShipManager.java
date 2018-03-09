@@ -66,6 +66,7 @@ public class ShipManager {
     public void resetShips(){
         for(Ship ship:shipList){
             ship.setIsDestroyed(false);
+            ship.resetHits();
         }
     }
 }

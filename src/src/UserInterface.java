@@ -9,6 +9,7 @@ public class UserInterface {
     private ShipManager player1Ships = new ShipManager();
     private ShipManager player2Ships = new ShipManager();
     private GameLogic game = new GameLogic();
+    private boolean gameContinue = true;
     private final int play1 = 1;
     private final int play2 = 2;
     private final int rules = 3;
@@ -74,6 +75,11 @@ public class UserInterface {
         System.out.println("-----------------------------------------------");
         System.out.println("PLAYER 2 SHIP PLACEMENT");
         shipPlacement(player2Grid, player2Ships);
+        while(gameContinue) {
+            System.out.println("-----------------------------------------------");
+            System.out.println("PLAYER 1's TURN");
+            playerShot(player2Grid, player2Ships);
+        }
         game.reset(player1Grid, player2Grid, player1Ships, player2Ships);
         System.out.println("-----------------------------------------------");
         System.out.println("Press enter to return to menu");
@@ -114,14 +120,62 @@ public class UserInterface {
         if(input.equals(yes)){
             game.autoShipPlacement(grid, ships);
         } else{
-            boolean shipNotPlaced = true;
-            while(shipNotPlaced) {
-                game.playerShipPlacement(grid, ships);
+            for(Ship ship:ships.getShipList()) {
+                boolean shipNotPlaced = true;
+                int[] inputStartLocation = new int[2];
+                int orientation = ShipManager.horizontal;
+                grid.printFullBoard();
+                while (shipNotPlaced) {
+                    System.out.println("-----------------------------------------------");
+                    System.out.println("Please enter the starting grid coordinates for: " + ship.getShipType() + "\nLength: " + ship.getShipLength());
+                    input = sc.nextLine();
+                    inputStartLocation = game.stringToCoordinates(input);
+                    if(inputStartLocation[0] == 0 || inputStartLocation[1] == 0){
+                        System.out.println("Invalid location. Please enter a valid grid coordinate (Letter then number eg A5)");
+                        continue;
+                    }
+                    System.out.println("Please enter an orientation for the ship (horizontal/vertical):");
+                    input = sc.nextLine();
+                    if(input.equalsIgnoreCase("horizontal") || input.equalsIgnoreCase("h")){
+                        orientation = ShipManager.horizontal;
+                    } else if(input.equalsIgnoreCase("vertical") || input.equalsIgnoreCase("v")){
+                        orientation = ShipManager.vertical;
+                    } else{
+                        orientation = 0;
+                    }
+                    shipNotPlaced = game.playerShipPlacement(grid, ships, inputStartLocation, ship, orientation);
+                    if(shipNotPlaced){
+                        System.out.println("-----------------------------------------------");
+                        System.out.println("Invalid location. Please enter a valid grid coordinate (Letter then number eg A5)\n" +
+                                "and valid orientation (horizontal, vertical or h/v) that do not overlap another\n" +
+                                "ship/edge of board. Ships are placed horizontally to the right, or vertically\ndownwards from this point");
+                    }
+                }
             }
         }
-        grid.printFullBoard();
         System.out.println("-----------------------------------------------");
-        System.out.println("Press enter to continue");
+        System.out.println("If you want to view current ship placement then enter board. Otherwise press enter");
         input = sc.nextLine();
+        if(input.equalsIgnoreCase("board") || input.equalsIgnoreCase("b")) {
+            grid.printFullBoard();
+        }
+        System.out.println("-----------------------------------------------");
+        System.out.println("Ship placement complete. Press enter to continue");
+        input = sc.nextLine();
+    }
+
+    private void playerShot(Grid playerGrid, ShipManager playerShips){
+        boolean invalidShot = true;
+        String input = "";
+        int[] shotLocation = new int[2];
+        while(invalidShot){
+            System.out.println("-----------------------------------------------");
+            playerGrid.printTargetBoard();
+            System.out.println();
+            System.out.println("Please enter a coordinate to fire at (eg A4)");
+            input = sc.nextLine();
+            shotLocation = game.stringToCoordinates(input);
+            invalidShot = playerGrid.checkShotInvalid(shotLocation);
+        }
     }
 }
